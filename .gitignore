@@ -1,0 +1,17 @@
+# Local secrets and review data — never commit
+credentials.json
+credentials_bot.json
+.session_cookies*.txt
+cookies*.txt
+screen_audit.log
+submit_state*.json
+citation_id_mapping.csv
+citations_dump.json
+*_export.zip
+*.jsonl
+
+# Local artefacts
+__pycache__/
+*.pyc
+report/
+tmp/
