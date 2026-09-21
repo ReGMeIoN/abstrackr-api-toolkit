@@ -133,11 +133,37 @@ citation only counts as screened after the second reviewer votes, which is why
 
 | Method | Route | Body |
 |---|---|---|
-| GET/POST | `/api/projects/{pid}/screening_sets` | `{"name":"…"}` → **201** with the new set |
+| GET/POST | `/api/projects/{pid}/screening_sets` | `{"name":"…"}` → **201** with the new set. ⚠️ **`filter_json` in the POST body is IGNORED** — the set comes back with `filter_json: null` and `total` equal to the whole project (verified: `{"name":…,"filter_json":{"tag":"hold:fulltext"}}` → `filter_json: None, total: 9438`). Sets with a filter can only be created in the web UI. Always re-read the created set and check `total` before trusting it. |
 | PUT/DELETE | `/api/projects/{pid}/screening_sets/{set_id}` | `{"name":…}` / — |
 | POST | `/api/projects/{pid}/screening_sets/{set_id}/seek` | `{"position":N}` |
 | GET | `/api/projects/{pid}/screening_sets/{set_id}/next?advance=true` | — |
 | GET/POST/DELETE | `/api/projects/{pid}/screening_sets/{set_id}/users[/{user_id}]` | assignments |
+
+**A screening set is a live filter, not a curated list.** Its `filter_json` is
+re-evaluated by the server:
+
+* `{"labeled_by_decision":"maybe"}` → every citation *you* labelled Maybe. Release
+  those labels and the set becomes empty; label one Maybe again and it reappears.
+* The queue is "records in the filter that **you** have not labelled yet", which
+  is why an account that already labelled everything sees `done == total` and a
+  "nothing left to screen" screen. See `pipeline/s11_release_labels.py`.
+
+### Making a queue a human can actually screen
+
+If automation wrote the labels with the reviewer's own account, that reviewer can
+no longer screen anything (every queue is empty). The fix is to move the AI verdict
+from the **label** into a **tag**, delete the label, and let the human screen for
+real:
+
+```
+DELETE /api/projects/{pid}/bulk-labels {"citation_ids":[…]}   -> back to unscreened
+POST   /api/projects/{pid}/bulk-labels {"citation_ids":[…],"value":0}  -> restore Maybe
+```
+
+The tags (`AI-p1:*`, `hold:fulltext`, …) are untouched, so the AI verdict stays
+auditable while the human pass becomes real. A "Maybe" label also registers as a
+**conflict** (`conflict_count` = the Maybe count, `next?mode=conflict` returns
+them), which is the no-write path to the same queue.
 
 ## 10. Duplicate detection
 
