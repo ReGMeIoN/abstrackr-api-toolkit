@@ -37,7 +37,11 @@ sys.stdout.reconfigure(encoding="utf-8")
 BASE = "https://abstrackr.com"
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-ABST = os.path.join(ROOT, "abstrackr")
+# Where credentials.json / .session_cookies.txt live. Defaults to a sibling
+# `abstrackr/` directory (the layout the scripts use out of the box); set
+# ABSTRACKR_HOME to point at another directory -- e.g. a review workdir that
+# keeps its own session next to its data.
+ABST = os.environ.get("ABSTRACKR_HOME") or os.path.join(ROOT, "abstrackr")
 CRED = os.path.join(ABST, "credentials.json")
 COOKIES = os.path.join(ABST, ".session_cookies.txt")
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "

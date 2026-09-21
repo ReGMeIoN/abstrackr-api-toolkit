@@ -42,6 +42,42 @@ for the endpoint table and `docs/PITFALLS.md` for the traps).
 | `abstrackr_jsonl_report.py` | Parse a full-project JSONL export into PRISMA counts, per-reviewer activity, conflicts and **Cohen's kappa** |
 | `probes/probe_ris_fields.py` | Demonstrates that RIS import loses the PMID and that de-duplication does not fire |
 | `probes/probe_csv_fields.py` | Demonstrates that CSV import populates `pmid` correctly |
+| **`pipeline/`** | **The screening pipeline: batch → screen → validate → Hold pool → submit → verify → PRISMA.** See below |
+| **`prompts/`** | **Screening prompt templates (title/abstract and full text), the method written down** |
+| **`docs/PIPELINE.md`** | **The pipeline SOP: stages, quality gates, orchestration discipline, research integrity** |
+
+---
+
+## The screening pipeline
+
+`abstrackr_screen.py` moves citations; `pipeline/` runs a **review**. It is the
+reusable form of a workflow that screened 8,491 unique records in 85 batches with
+0 failed validations, then wrote 9,438 labels and 41,275 tags to the platform and
+verified every one of them by crawling the project back.
+
+```
+workbook → s1 batch → screen → s2 validate → s3 merge → s4 normalise
+        → s5 Hold pool → s6 audit sample → s7 submit → s8 verify → s9 PRISMA
+```
+
+Everything review-specific lives in one `protocol.json` (codes, vocabularies,
+conditional output schema, column mapping, platform tag plan); the code stays
+generic. Four ideas carry most of the value:
+
+* **One central validator.** Screeners read an input, write one file, return one
+  line. Batch that 100 records at a time and you pay 85 agent startups for
+  8,500 records — 200–300 per batch is the fix.
+* **Only definitional normalisations are automatic.** Ambiguous code boundaries
+  are exported to CSV for a human; auto-fixing one of them once rewrote 373
+  *correct* decisions.
+* **A write is not done until it is verified.** The platform has no tag filter,
+  so `s8` crawls every citation and compares the complete per-citation tag set,
+  not just totals.
+* **PRISMA numbers are derived and checked**, never hand-typed; anything unknown
+  is left `null` and listed as "to fill by hand".
+
+Start at [`pipeline/README.md`](pipeline/README.md); the reasoning is in
+[`docs/PIPELINE.md`](docs/PIPELINE.md).
 
 ---
 

@@ -1,0 +1,124 @@
+{
+  "_readme": [
+    "TEMPLATE. Copy to <workdir>/protocol.json and edit every section.",
+    "The pipeline code is generic; this file is the whole review-specific part.",
+    "Codes are validated so that a code's first letter must equal its family key,",
+    "because the pipeline derives the family from the `d` field everywhere."
+  ],
+  "protocol_id": "example-review-tiab",
+  "stage": "title-abstract",
+  "review": {
+    "title": "EXAMPLE: <exposure> and the risk of <outcome>",
+    "rubric": "SCREENING_RUBRIC.md",
+    "protocol_doc": "01-protocol.md",
+    "notes": "Title/abstract stage never decides Include. F/M codes are the Hold pool."
+  },
+
+  "decision_families": {
+    "F": { "name": "hold", "hold": true,  "codes": ["F1", "F2", "F3"] },
+    "X": { "name": "exclude", "hold": false, "codes": ["X1", "X2", "X3", "X4", "X5"] },
+    "M": { "name": "parallel-stream", "hold": true, "codes": ["M1"] },
+    "R": { "name": "no-new-data", "hold": false, "codes": ["R1"] }
+  },
+
+  "code_meanings": {
+    "F1": "Abstract explicitly reports the outcome of interest",
+    "F2": "Multi-site / all-cancer cohort (target outcome may sit in a supplement)",
+    "F3": "No exclusion criterion applies but key information is missing",
+    "M1": "Mendelian randomisation / genetic study -> parallel triangulation stream",
+    "X1": "No exposure wording anywhere in the title/abstract",
+    "X2": "Outcome is a single non-target cancer",
+    "X3": "No cancer-incidence outcome (prognosis / diagnosis / treatment / mechanism)",
+    "X4": "Case report, case series n<10, animal or in-vitro study",
+    "X5": "No comparison group / cross-sectional / no temporal order",
+    "R1": "Review, editorial, comment or letter with no original data of its own"
+  },
+
+  "vocabularies": {
+    "form": ["sr-ma", "narrative-review", "editorial", "letter", "comment", "errata",
+             "guideline", "protocol", "case-report", "case-series", "conference-abstract",
+             "animal", "in-vitro", "diagnostic", "prognostic", "cohort", "case-control",
+             "nested-cc", "cross-sectional", "rct", "mr-genetic", "survey", "other",
+             "unclear"],
+    "exp": ["intervention", "intervention+related-condition", "condition-only",
+            "proxy-exposure", "none", "riskfactor-unspecified", "unclear"],
+    "out": ["target-explicit", "target-subtype", "multisite", "combined-unsplittable",
+            "adjacent-organs", "non-target-only", "other-cancer", "non-cancer", "unclear"],
+    "need": ["exposure", "outcome", "design", "effect", "comparator"]
+  },
+
+  "schema": {
+    "group_fields": ["form", "exp", "out"],
+    "fast_lane": { "code": "X4", "fields": ["i", "d", "c", "r"] },
+    "need_for_hold": true,
+    "reason_field": "r",
+    "evidence_field": "s",
+    "confidence_field": "conf",
+    "confidence_values": ["high", "medium", "low"],
+    "effect_field": "eff",
+    "max_reason_chars": 140,
+    "max_evidence_chars": 120
+  },
+
+  "workbook": {
+    "records": "records_enriched.csv",
+    "records_all": "records_all.csv",
+    "id_column": "idx",
+    "batch_fields": { "i": "idx", "y": "year", "j": "journal", "t": "title", "a": "abstract" },
+    "meta": {
+      "citation_id": "citation_id",
+      "pmid": "pmid",
+      "doi": "doi",
+      "language": "language",
+      "has_abstract": "has_abstract"
+    }
+  },
+
+  "dedup": { "keys": ["pmid", "doi", "title"] },
+
+  "normalize_rules": [
+    {
+      "id": "A",
+      "description": "Systematic review / meta-analysis has no original data of its own -> R1. Definitional, therefore safe to apply automatically.",
+      "when": { "form": ["sr-ma"], "code_not": ["R1"] },
+      "set": { "c": "R1", "d": "R" }
+    }
+  ],
+
+  "audit_exports": [
+    {
+      "name": "boundary_audit",
+      "file": "boundary_audit.csv",
+      "description": "Records sitting on an ambiguous code boundary. Both codes exclude, so only the PRISMA reason split moves -> export for humans, never auto-fix.",
+      "when": { "out": ["non-target-only"], "code": ["X2", "X3"] },
+      "columns": ["code", "form", "out", "reason", "title"]
+    }
+  ],
+
+  "hold_pool": {
+    "file_json": "hold_fulltext.json",
+    "file_csv": "hold_fulltext.csv",
+    "summary_md": "hold_summary.md",
+    "sort_codes": ["F1", "F3", "F2", "M1"]
+  },
+
+  "platform": {
+    "value_by_family": { "F": 0, "M": 0, "R": -1, "X": -1 },
+    "label_names": { "1": "Include", "0": "Maybe", "-1": "Exclude" },
+    "tag_prefix": "AI-p1",
+    "role_tags": [
+      { "tag": "hold:fulltext", "hold": true },
+      { "tag": "role:citation-chasing", "codes": ["R1"] }
+    ],
+    "meta_tags": [
+      { "tag": "qs:no-abstract", "when_meta": { "column": "has_abstract", "not_in": ["yes"] } },
+      { "tag": "lang:non-en", "when_meta": { "column": "language", "not_in": ["english", ""] } }
+    ],
+    "dup_tags": { "keep": "dup:keep", "copy": "dup:copy" },
+    "files": {
+      "records": "records_all.csv",
+      "decisions": "all_decisions_normalized.json",
+      "enriched": "records_enriched.csv"
+    }
+  }
+}
