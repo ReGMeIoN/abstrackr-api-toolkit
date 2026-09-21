@@ -63,6 +63,15 @@ throughout as worked examples.
 | 8 | `s7_submit.py` | decisions + all records → platform labels + tags | **dry run by default**; `--execute`; resumable; refuses partial passes |
 | 9 | `s8_verify.py` | platform ↔ local plan → discrepancy report | crawls every citation; exit 0 only when it fully agrees |
 | 10 | `s9_prisma.py` | decisions + pool → `prisma_values.json`, `prisma_numbers.md` | checks the PRISMA identities; leaves unknown boxes `null` |
+| 11 | `s10_export_queue.py` | a platform screening set → local queue CSV | read-only; cross-checks the queue against the local decisions |
+
+> **Screening sets are saved filters, not hand-curated lists.** `POST
+> /screening_sets {"name":…}` creates a queue defined by `filter_json` (e.g.
+> `{"labeled_by_decision":"maybe"}`), and the server re-evaluates it live as
+> labels change; `citations?set_id=N` then filters by it. So "give me the 258
+> Maybe records" needs no re-import and no second project — but the queue must
+> still be *verified*, because an ignored filter silently returns the whole
+> project. `s10` takes `--expect N` for exactly that reason.
 
 Run them in order. Stages 4, 6 and 9 are the ones people skip and regret.
 

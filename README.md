@@ -58,6 +58,7 @@ verified every one of them by crawling the project back.
 ```
 workbook → s1 batch → screen → s2 validate → s3 merge → s4 normalise
         → s5 Hold pool → s6 audit sample → s7 submit → s8 verify → s9 PRISMA
+        → s10 export a platform screening set back down as a local queue
 ```
 
 Everything review-specific lives in one `protocol.json` (codes, vocabularies,

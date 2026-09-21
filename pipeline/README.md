@@ -59,6 +59,11 @@ resolves its paths and vocabularies through `protocol.py`.
 | 7 | `s7_submit.py` | decisions + all records | platform labels + tags (dry run by default) |
 | 8 | `s8_verify.py` | platform + local plan | discrepancy report |
 | 9 | `s9_prisma.py` | decisions + pool | `prisma_values.json`, `prisma_numbers.md` |
+| 10 | `s10_export_queue.py` | platform screening set / filter | `queue_*.csv` (cross-checked against local decisions) |
+
+A platform **screening set** is a saved *filter* (`{"labeled_by_decision":"maybe"}`),
+re-evaluated live by the server — so a review queue is **created on the platform**,
+not uploaded, and `s10` only reads it back and proves its size and contents.
 
 ## Files
 
