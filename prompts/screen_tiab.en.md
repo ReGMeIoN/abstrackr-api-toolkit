@@ -12,7 +12,7 @@
 
 | Placeholder | Meaning | Example |
 |---|---|---|
-| `{{PROJECT_NAME}}` | review title | Cholecystectomy and cholangiocarcinoma risk |
+| `{{PROJECT_NAME}}` | review title | Exposure X and outcome Y |
 | `{{RUBRIC_PATH}}` | absolute path to the rubric (PECO, inclusion, exclusion codes) | `…/SCREENING_RUBRIC.md` |
 | `{{BATCH_DIR}}` / `{{DECISION_DIR}}` | absolute dirs for input batches / output decisions | `…/batches`, `…/decisions` |
 | `{{BATCH}}` / `{{N}}` | batch name / batch size, given at call time | `b_001`, `250` |

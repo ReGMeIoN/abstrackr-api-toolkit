@@ -19,10 +19,10 @@ filter (which would return the whole project) into a loud failure instead of a
 9,000-row file nobody notices.
 
 usage
-    python s10_export_queue.py --dir <workdir> --project 5691 --list-sets
-    python s10_export_queue.py --dir <workdir> --project 5691 --set-id 802
-    python s10_export_queue.py --dir <workdir> --project 5691 --labeled-by-decision maybe
-    python s10_export_queue.py --dir <workdir> --project 5691 --set-id 802 --expect 258
+    python s10_export_queue.py --dir <workdir> --project <id> --list-sets
+    python s10_export_queue.py --dir <workdir> --project <id> --set-id 802
+    python s10_export_queue.py --dir <workdir> --project <id> --labeled-by-decision maybe
+    python s10_export_queue.py --dir <workdir> --project <id> --set-id 802 --expect 258
 """
 
 import argparse

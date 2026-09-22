@@ -4,10 +4,10 @@ The rule that matters here is the one that is **not** applied.
 
 A first pass of cross-batch coding always drifts a little. The temptation is to
 "fix" every inconsistency mechanically. That is how a clean dataset gets
-corrupted: in the cholecystectomy review, an attempt to normalise the ambiguous
+corrupted: in one review, an attempt to normalise the ambiguous
 X2-vs-X3 boundary off the `form` field would have rewritten **373 decisions that
 were already correct** (the model had filled `form` with the study DESIGN -- a
-cohort of GBC patients -- rather than the OUTCOME kind). It was reverted.
+cohort of patients with the non-target cancer -- rather than the OUTCOME kind). It was reverted.
 
 So this stage draws a hard line:
 

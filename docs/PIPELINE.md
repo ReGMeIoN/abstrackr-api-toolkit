@@ -5,10 +5,10 @@ de-duplicated workbook to a verified platform write-back, with one central
 validator, one reviewed protocol file, and a PRISMA account that is checked
 rather than hand-typed.
 
-It was extracted from a real review (cholecystectomy and cholangiocarcinoma,
-8,491 unique records, 85 batches, 0 failed validations, ~41k platform tag
-writes) where every rule below was paid for. The numbers in that review are used
-throughout as worked examples.
+It was extracted from a real systematic review — several thousand unique records,
+screened in batches, with every stage verified — where each rule below was paid
+for. Identifiers have been removed, but the numbers in §11 are used throughout as
+a worked example.
 
 ```
    workbook            s1  split into batches        (200-300 records each)
@@ -64,6 +64,7 @@ throughout as worked examples.
 | 9 | `s8_verify.py` | platform ↔ local plan → discrepancy report | crawls every citation; exit 0 only when it fully agrees |
 | 10 | `s9_prisma.py` | decisions + pool → `prisma_values.json`, `prisma_numbers.md` | checks the PRISMA identities; leaves unknown boxes `null` |
 | 11 | `s10_export_queue.py` | a platform screening set → local queue CSV | read-only; cross-checks the queue against the local decisions |
+| 12 | `s11_release_labels.py` | automation-written labels → `unscreened` | makes a human pass possible at all; `--restore` puts the labels back |
 
 > **Screening sets are saved filters, not hand-curated lists.** `POST
 > /screening_sets {"name":…}` creates a queue defined by `filter_json` (e.g.
@@ -93,11 +94,8 @@ Run them in order. Stages 4, 6 and 9 are the ones people skip and regret.
 | `audit_exports` | ambiguous boundaries to export for a human, with a written rationale |
 | `platform` | label value per family, tag prefix, role/meta/duplicate tag plan |
 
-Two reference files ship with the pipeline:
-
-* `pipeline/protocol.example.json` — a neutral template to copy.
-* `pipeline/examples/cca-cholangiocarcinoma.protocol.json` — the real worked
-  instantiation, including the full decision ladder it encodes.
+One reference file ships with the pipeline: `pipeline/protocol.example.json`, a
+neutral template to copy and fill in.
 
 `protocol.py` validates the file when a stage starts, so a typo fails
 immediately rather than halfway through a 9,000-record submission.
@@ -260,6 +258,11 @@ An LLM-assisted pass changes what the methods section may claim. Non-negotiable:
 5. **If blinding was lifted** on the platform (by any party, for any reason),
    the human review can no longer be called blinded. Record the audit-log entry
    and describe it honestly.
+6. **Release automation-written labels before the human pass.** If the machine
+   submitted through the reviewer's own account, that account counts as finished:
+   every queue comes back empty and no human review can take place at all — leaving
+   the AI verdict to masquerade as human screening. Move the verdict into tags and
+   free the labels (`pipeline/s11_release_labels.py`).
 
 In the worked example the platform's blinding was lifted by the project leader
 after the import, so the human review is reported as **AI-assisted first pass +
@@ -282,6 +285,7 @@ ones:
 | Normalising after the platform write | platform drifts by exactly the normalised records | normalise → submit → verify |
 | Comparing aggregate tag counts only | a tag on the wrong duplicate copy passes | `s8` compares per-citation tag sets |
 | Treating a `null` PRISMA box as zero | fabricated box in the flow diagram | `s9` lists "to fill by hand" |
+| Automation labelling through the reviewer's own account | every queue looks finished; no human review can happen | release the labels first, keep the verdict as tags (`s11`) |
 | Assuming the platform state from a handover note | names, blinding and merges change under you | re-read the project state at the start of every session |
 
 ---
@@ -304,9 +308,9 @@ ones:
 Reproducing it end to end with this pipeline:
 
 ```bash
-py="C:/Users/ReG/miniconda3/python.exe"
-proto=pipeline/examples/cca-cholangiocarcinoma.protocol.json
-dir="D:/deepseek/cholecystectomy-cholangiocarcinoma-meta/screening/project_5691"
+py=python
+proto="$WORKDIR/protocol.json"
+dir="<workdir>"
 
 $py pipeline/s1_prep_batches.py --dir $dir --protocol $proto --size 100
 # ... screening pass writes decisions/ ...
@@ -315,8 +319,8 @@ $py pipeline/s3_merge.py        --dir $dir --protocol $proto
 $py pipeline/s4_normalize.py    --dir $dir --protocol $proto --apply
 $py pipeline/s5_hold_pool.py    --dir $dir --protocol $proto
 $py pipeline/s6_audit_sample.py --dir $dir --protocol $proto --n 50 --seed 500
-$py pipeline/s7_submit.py       --dir $dir --protocol $proto --project 5691          # dry run
-$py pipeline/s7_submit.py       --dir $dir --protocol $proto --project 5691 --execute
-$py pipeline/s8_verify.py       --dir $dir --protocol $proto --project 5691
+$py pipeline/s7_submit.py       --dir $dir --protocol $proto --project <id>          # dry run
+$py pipeline/s7_submit.py       --dir $dir --protocol $proto --project <id> --execute
+$py pipeline/s8_verify.py       --dir $dir --protocol $proto --project <id>
 $py pipeline/s9_prisma.py       --dir $dir --protocol $proto --topical-reviews 710 --included 215
 ```

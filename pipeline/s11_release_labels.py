@@ -33,11 +33,11 @@ Safety
       (an ignored platform filter would otherwise return the whole project)
 
 usage
-    python s11_release_labels.py --dir <workdir> --project 5691 --inspect
-    python s11_release_labels.py --dir <workdir> --project 5691 --tag hold:fulltext
-    python s11_release_labels.py --dir <workdir> --project 5691 --tag hold:fulltext --release --execute
-    python s11_release_labels.py --dir <workdir> --project 5691 --ids-from queue.csv --release --execute
-    python s11_release_labels.py --dir <workdir> --project 5691 --tag hold:fulltext --restore --execute
+    python s11_release_labels.py --dir <workdir> --project <id> --inspect
+    python s11_release_labels.py --dir <workdir> --project <id> --tag hold:fulltext
+    python s11_release_labels.py --dir <workdir> --project <id> --tag hold:fulltext --release --execute
+    python s11_release_labels.py --dir <workdir> --project <id> --ids-from queue.csv --release --execute
+    python s11_release_labels.py --dir <workdir> --project <id> --tag hold:fulltext --restore --execute
 """
 
 import argparse

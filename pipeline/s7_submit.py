@@ -2,7 +2,7 @@
 
 This is the only stage that writes to the platform. It is built around the one
 structural fact that makes a review pool messy: **the platform holds redundant
-copies** (the cholecystectomy project had 9,438 citations for 8,491 unique
+copies** (one project had 9,438 citations for 8,491 unique
 records). Decisions are taken once per unique record and then **fanned out to
 every citation id in the same duplicate cluster**, so the platform can never show
 two sibling copies with two different verdicts.
@@ -23,8 +23,8 @@ Safety
       Maybe (0) and never writes Include (1)
 
 usage
-    python s7_submit.py --dir <workdir> --project 5691 [--protocol p.json]
-    python s7_submit.py --dir <workdir> --project 5691 --execute
+    python s7_submit.py --dir <workdir> --project <id> [--protocol p.json]
+    python s7_submit.py --dir <workdir> --project <id> --execute
 """
 
 import argparse

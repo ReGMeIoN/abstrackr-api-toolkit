@@ -22,7 +22,7 @@ Note: the listing endpoint is 0-indexed, 100 rows per page, and `limit`/`offset`
 short page -- do not compute pages from a count.
 
 usage
-    python s8_verify.py --dir <workdir> --project 5691 [--protocol p.json]
+    python s8_verify.py --dir <workdir> --project <id> [--protocol p.json]
 """
 
 import argparse

@@ -60,6 +60,7 @@ resolves its paths and vocabularies through `protocol.py`.
 | 8 | `s8_verify.py` | platform + local plan | discrepancy report |
 | 9 | `s9_prisma.py` | decisions + pool | `prisma_values.json`, `prisma_numbers.md` |
 | 10 | `s10_export_queue.py` | platform screening set / filter | `queue_*.csv` (cross-checked against local decisions) |
+| 11 | `s11_release_labels.py` | automation-written labels | released back to `unscreened` so a human can screen (the AI verdict stays in the tags) |
 
 A platform **screening set** is a saved *filter* (`{"labeled_by_decision":"maybe"}`),
 re-evaluated live by the server — so a review queue is **created on the platform**,
@@ -70,9 +71,8 @@ not uploaded, and `s10` only reads it back and proves its size and contents.
 | File | Role |
 |---|---|
 | `protocol.py` | protocol loader, validation, vocabularies, de-duplication, and the shared tag-plan builder |
-| `protocol.example.json` | neutral template — copy this into your workdir |
-| `examples/cca-cholangiocarcinoma.protocol.json` | a real, filled-in protocol (no review data) |
-| `s1_…` … `s9_…` | the stages |
+| `protocol.example.json` | The template to copy into your workdir and fill in |
+| `s1_…` … `s11_…` | The stages |
 
 ## Two things that are deliberate, not incidental
 

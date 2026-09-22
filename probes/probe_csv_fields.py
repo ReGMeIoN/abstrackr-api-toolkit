@@ -15,9 +15,9 @@ spec.loader.exec_module(scr)
 
 CSV = (
     "pmid,title,abstract,authors,journal,publication_year,doi\n"
-    "11111111,CSV PROBE alpha cholecystectomy cholangiocarcinoma,alpha abstract,"
+    "11111111,CSV PROBE alpha citation record,alpha abstract,"
     "Probe A,\"J Probe\",2026,10.9999/csv.a\n"
-    "22222222,CSV PROBE beta gallstones bile duct cancer,beta abstract,"
+    "22222222,CSV PROBE beta citation record,beta abstract,"
     "Probe B,\"J Probe\",2026,10.9999/csv.b\n"
 )
 

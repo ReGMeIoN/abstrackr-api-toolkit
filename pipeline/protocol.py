@@ -11,9 +11,7 @@ down everything that is review-specific:
     platform mapping                label value per family, and the whole tag plan
 
 The code stays generic; a new systematic review only needs a new `protocol.json`.
-Start from `protocol.example.json` -- or copy
-`examples/cca-cholangiocarcinoma.protocol.json`, which is a real, filled-in
-instantiation (cholecystectomy and cholangiocarcinoma, 8,491 records, 85 batches).
+Start from `protocol.example.json` and fill in your own codes and vocabularies.
 
 Why a loader at all: a typo in the protocol must fail **at the start of a stage**,
 not halfway through a 9,000-record platform submission. `load_protocol()`

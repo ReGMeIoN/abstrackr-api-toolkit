@@ -9,7 +9,7 @@ reviewer's codes, and each maps onto the protocol's exclusion reasons:
     MR stream (M1)            -> AI-p1:MR-stream
     review (R1)               -> AI-p1:review-citation-chasing
     X1                        -> AI-p1:E1-no-exposure
-    X2                        -> AI-p1:E1-outcome-not-CCA
+    X2                        -> AI-p1:E1-outcome-not-target
     X3                        -> AI-p1:no-cancer-incidence-outcome
     X4                        -> AI-p1:E3-case-report-animal
     X5                        -> AI-p1:E2-E4-no-comparator
@@ -17,7 +17,7 @@ reviewer's codes, and each maps onto the protocol's exclusion reasons:
 
 The exposure-mismatch case is a record our own precision pass flagged: it is
 screened as "include" (conservative) but should be looked at first, because the
-study's exposure is not cholecystectomy/gallstone disease.
+study's exposure is not the exposure under review.
 
 Usage: python abstrackr_tag.py [--execute]
 """
@@ -42,7 +42,7 @@ CODE_TAG = {
     "M1": "AI-p1:MR-stream",
     "R1": "AI-p1:review-citation-chasing",
     "X1": "AI-p1:E1-no-exposure",
-    "X2": "AI-p1:E1-outcome-not-CCA",
+    "X2": "AI-p1:E1-outcome-not-target",
     "X3": "AI-p1:no-cancer-incidence-outcome",
     "X4": "AI-p1:E3-case-report-animal",
     "X5": "AI-p1:E2-E4-no-comparator",
