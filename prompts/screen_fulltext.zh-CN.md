@@ -11,12 +11,12 @@
 | 占位符 | 含义 |
 |---|---|
 | `{{PROJECT_NAME}}` | 综述题目 |
-| `{{RUBRIC_PATH}}` | 判据文件绝对路径（PECO + 纳入标准 + 排除编码 E1–E9） |
+| `{{RUBRIC_PATH}}` | 判据文件绝对路径（PECO + 纳入标准 + 排除编码表） |
 | `{{HOLD_JSON_PATH}}` | Hold 池文件绝对路径 |
 | `{{FT_BATCH_FILE}}` | 本批全文批次文件（含全文路径） |
 | `{{FT_DECISION_DIR}}` | 全文判定输出目录 |
 | `{{BATCH}}` `{{N}}` | 批号 / 本批条数（建议每批 3–8 条；单条全文 >60,000 字符时一条一批） |
-| `{{EXCLUDE_CODES}}` | 排除编码表（E1–E9 → 含义 → 去向） |
+| `{{EXCLUDE_CODES}}` | 排除编码表（编码 → 含义 → 去向）；**编码集由 protocol 定义，不写死在模板里** |
 | `{{OUTCOME_DEFINITION}}` | 结局口径 |
 
 ---

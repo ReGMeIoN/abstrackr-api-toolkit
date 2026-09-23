@@ -14,7 +14,7 @@
 | 占位符 | 含义 | 示例 |
 |---|---|---|
 | `{{PROJECT_NAME}}` | 综述题目 | 暴露 X 与结局 Y |
-| `{{RUBRIC_PATH}}` | 判据文件绝对路径（含 PECO、纳入标准、排除编码 E1–E9） | `…/screening/SCREENING_RUBRIC.md` |
+| `{{RUBRIC_PATH}}` | 判据文件绝对路径（含 PECO、纳入标准、排除编码表） | `…/screening/SCREENING_RUBRIC.md` |
 | `{{BATCH_DIR}}` | 批次目录绝对路径 | `…/<workdir>/batches` |
 | `{{DECISION_DIR}}` | 判定输出目录绝对路径 | `…/<workdir>/decisions` |
 | `{{BATCH}}` | 批号（调用时给） | `b_001` |
