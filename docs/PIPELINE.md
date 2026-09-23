@@ -65,6 +65,8 @@ a worked example.
 | 10 | `s9_prisma.py` | decisions + pool → `prisma_values.json`, `prisma_numbers.md` | checks the PRISMA identities; leaves unknown boxes `null` |
 | 11 | `s10_export_queue.py` | a platform screening set → local queue CSV | read-only; cross-checks the queue against the local decisions |
 | 12 | `s11_release_labels.py` | automation-written labels → `unscreened` | makes a human pass possible at all; `--restore` puts the labels back |
+| 13 | `s12_bulk_exclude.py` | a family-level exclusion rule + workbooks → receipt CSV + platform labels/tags | **never overwrites a decided record**; every exclusion carries its matched evidence, and `--execute` is opt-in |
+| 14 | `s13_enrich_metadata.py` | records with no abstract → `*_metadata_patch.csv` | PMID route first, title-search route second, and a returning title must **match** before anything is accepted |
 
 > **Screening sets are saved filters, not hand-curated lists.** `POST
 > /screening_sets {"name":…}` creates a queue defined by `filter_json` (e.g.
@@ -165,7 +167,8 @@ standard. **Check pool coverage before screening, not after.**
 
 **On G6 — why normalisation is dangerous.** Cross-batch drift is real, and the
 temptation is to normalise it all mechanically. In the worked example, one
-ambiguous boundary (X2 vs X3 for gallbladder-cancer records, 2,008 records) was
+ambiguous boundary (X2 vs X3 for records whose only outcome was the non-target
+cancer, 2,008 records) was
 run through a `form`-based rule; sampling showed it would have rewritten 373
 decisions that were *already correct*, because the model had filled `form` with
 the study design rather than the outcome kind. It was reverted and exported for

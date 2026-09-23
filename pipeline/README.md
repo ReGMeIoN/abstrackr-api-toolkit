@@ -61,6 +61,8 @@ resolves its paths and vocabularies through `protocol.py`.
 | 9 | `s9_prisma.py` | decisions + pool | `prisma_values.json`, `prisma_numbers.md` |
 | 10 | `s10_export_queue.py` | platform screening set / filter | `queue_*.csv` (cross-checked against local decisions) |
 | 11 | `s11_release_labels.py` | automation-written labels | released back to `unscreened` so a human can screen (the AI verdict stays in the tags) |
+| 12 | `s12_bulk_exclude.py` | a family-level exclusion rule + workbooks | platform labels/tags + a receipt CSV proving each exclusion; skips anything a human already decided |
+| 13 | `s13_enrich_metadata.py` | records that arrived without an abstract | a metadata patch CSV, fetched from PubMed by PMID or by verified title search |
 
 A platform **screening set** is a saved *filter* (`{"labeled_by_decision":"maybe"}`),
 re-evaluated live by the server — so a review queue is **created on the platform**,
@@ -72,7 +74,7 @@ not uploaded, and `s10` only reads it back and proves its size and contents.
 |---|---|
 | `protocol.py` | protocol loader, validation, vocabularies, de-duplication, and the shared tag-plan builder |
 | `protocol.example.json` | The template to copy into your workdir and fill in |
-| `s1_…` … `s11_…` | The stages |
+| `s1_…` … `s13_…` | The stages |
 
 ## Two things that are deliberate, not incidental
 
@@ -85,6 +87,12 @@ PRISMA reason split. The protocol records the choice; the validator enforces it.
 **Audit exports are not fixes.** Anything ambiguous is written to CSV for a human
 and left untouched. See `docs/PIPELINE.md` §6 — automatic normalisation of an
 ambiguous boundary once rewrote 373 correct decisions.
+
+**A bulk decision needs a receipt.** `s12` exists because some exclusions follow
+from a property a whole family of records shares, and reading each one is waste —
+but a rule that cannot be audited is not a decision, it is a deletion. It writes a
+receipt row per record, tags the batch so it can be undone, and refuses to touch a
+record a human has already decided.
 
 ## Requirements
 
